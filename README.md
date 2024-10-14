@@ -12,8 +12,9 @@ Update
 python packages
 - torch >= 2.0.0
 - transformers>=4.28.0
-- omegaconf pycountry sqlitedict lm-eval
+- omegaconf pycountry sqlitedict lm-eval==0.4.0
 
+conda activate wanda1
 
 ### Usage
 The RPTQ approach can be applied to OPT models.

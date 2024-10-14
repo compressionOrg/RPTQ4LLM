@@ -7,7 +7,7 @@ from models.opt import OPTClass
 import torch
 import time
 from datautils import get_loaders
-from lm_evaluation.lm_eval import tasks, evaluator
+from lm_eval import tasks, evaluator
 from quantize.opt_reorder_quantize import opt_reorder_quantize
 import datetime
 from models.int_opt_layer import QuantOPTAttention
@@ -16,6 +16,8 @@ from parallel_utils import map_layers_to_multi_gpus, get_lowest_occupied_gpu
 import torch.nn as nn
 from quantize.opt_reorder_quantize import opt_reorder_quantize
 from tqdm import tqdm
+
+from pdb import set_trace as st 
 
 torch.backends.cudnn.benchmark = True
 
@@ -226,12 +228,13 @@ def main():
 
     if "opt" in args.net:
         args.model = f"facebook/{args.net}"
-        if not os.path.exists(f"{args.cache_dir}/{args.net.split('-')[0]}/"):
-            os.makedirs(f"{args.cache_dir}/{args.net.split('-')[0]}/")
-        args.cache_dir = (
-            f"{args.cache_dir}/{args.net.split('-')[0]}/{args.net.split('-')[1]}"
-        )
+        # if not os.path.exists(f"{args.cache_dir}/{args.net.split('-')[0]}/"):
+        #     os.makedirs(f"{args.cache_dir}/{args.net.split('-')[0]}/")
+        # args.cache_dir = (
+        #     f"{args.cache_dir}/{args.net.split('-')[0]}/{args.net.split('-')[1]}"
+        # )
         print(args.cache_dir)
+        
         cache_file = f"{args.cache_dir}/torch_model.pth"
         if os.path.exists(cache_file):
             lm = torch.load(cache_file)
@@ -239,6 +242,7 @@ def main():
             lm = OPTClass(args)
             torch.save(lm, cache_file)
         lm.model.eval()
+        # st()
     else:
         raise NotImplementedError
 
@@ -251,7 +255,7 @@ def main():
 
     if "opt" in args.model:
         cache_dataloader = (
-            f"/tmp/dataloader_opt_{args.calib_dataset}_{args.nsamples}.cache"
+            f"./dataset_cache"
         )
         if os.path.exists(cache_dataloader):
             dataloader = torch.load(cache_dataloader)
